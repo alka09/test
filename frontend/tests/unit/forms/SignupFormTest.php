@@ -1,8 +1,8 @@
 <?php
-namespace frontend\tests\unit\models;
+namespace frontend\tests\unit\forms;
 
 use common\fixtures\UserFixture;
-use frontend\models\SignupForm;
+use frontend\forms\SignupForm;
 
 class SignupFormTest extends \Codeception\Test\Unit
 {
@@ -30,25 +30,7 @@ class SignupFormTest extends \Codeception\Test\Unit
             'password' => 'some_password',
         ]);
 
-        $user = $model->signup();
-        expect($user)->true();
-
-        /** @var \common\models\User $user */
-        $user = $this->tester->grabRecord('common\models\User', [
-            'username' => 'some_username',
-            'email' => 'some_email@example.com',
-            'status' => \common\models\User::STATUS_INACTIVE
-        ]);
-
-        $this->tester->seeEmailIsSent();
-
-        $mail = $this->tester->grabLastSentEmail();
-
-        expect($mail)->isInstanceOf('yii\mail\MessageInterface');
-        expect($mail->getTo())->hasKey('some_email@example.com');
-        expect($mail->getFrom())->hasKey(\Yii::$app->params['supportEmail']);
-        expect($mail->getSubject())->equals('Account registration at ' . \Yii::$app->name);
-        expect($mail->toString())->stringContainsString($user->verification_token);
+        expect_that($model->validate());
     }
 
     public function testNotCorrectSignup()
