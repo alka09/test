@@ -9,12 +9,13 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['username', 'password'], 'required'],
+            ['username', 'required', 'message' => ''],
+            ['password', 'required', 'message' => ''],
+//            [['username', 'password'], 'required'],
             ['rememberMe', 'boolean'],
-            ['password', 'validatePassword'],
         ];
     }
 }
