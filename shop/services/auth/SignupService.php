@@ -2,20 +2,28 @@
 
 namespace shop\services\auth;
 
+use shop\access\Rbac;
 use shop\entities\User\User;
 use shop\forms\auth\SignupForm;
 use shop\repositories\UserRepository;
+use shop\services\manage\RoleManager;
 use yii\mail\MailerInterface;
 
 class SignupService
 {
     private $mailer;
     private $users;
+    private $roles;
 
-    public function __construct(UserRepository $users, MailerInterface $mailer)
+    public function __construct(
+        UserRepository $users,
+        MailerInterface $mailer,
+        RoleManager $roles
+    )
     {
             $this->mailer = $mailer;
             $this->users = $users;
+            $this->roles = $roles;
     }
 
     public function signup(SignupForm $form): void
@@ -27,6 +35,7 @@ class SignupService
         );
 
         $this->users->save($user);
+        $this->roles->assign($user->id, Rbac::ROLE_USER);
 
         $sent = $this->mailer
             ->compose(

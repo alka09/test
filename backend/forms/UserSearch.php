@@ -5,6 +5,7 @@ namespace backend\forms;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use shop\entities\User\User;
+use yii\helpers\ArrayHelper;
 
 class UserSearch extends Model
 {
@@ -13,12 +14,13 @@ class UserSearch extends Model
     public $username;
     public $email;
     public $status;
+    public $role;
 
     public function rules(): array
     {
         return [
             [['id', 'status', 'created_at'], 'integer'],
-            [['username', 'email'], 'safe'],
+            [['username', 'email', 'role'], 'safe'],
         ];
     }
 
@@ -28,7 +30,7 @@ class UserSearch extends Model
      */
     public function search(array $params): ActiveDataProvider
     {
-        $query = User::find();
+        $query = User::find()->alias('u');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query
@@ -42,16 +44,25 @@ class UserSearch extends Model
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'status' => $this->status,
-            'created_at' => $this->created_at,
+            'u.id' => $this->id,
+            'u.status' => $this->status,
         ]);
 
+        if (!empty($this->role)) {
+            $query->innerJoin('{{%auth_assignments}} a', 'a.user_id = u.id');
+            $query->andWhere(['a.item_name' => $this->role]);
+        }
+
         $query
-            ->andFilterWhere(['like', 'username', $this->username])
-            ->andFilterWhere(['like', 'email', $this->email]);
+            ->andFilterWhere(['like', 'u.username', $this->username])
+            ->andFilterWhere(['like', 'u.email', $this->email]);
 
         return $dataProvider;
+    }
+
+    public function rolesList(): array
+    {
+        return ArrayHelper::map(\Yii::$app->authManager->getRoles(), 'name', 'description');
     }
 
 }
