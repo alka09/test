@@ -2,6 +2,7 @@
 
 use backend\widgets\grid\RoleColumn;
 use shop\entities\User\User;
+use shop\helpers\UserHelper;
 use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
@@ -26,8 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     'id',
                     'created_at:datetime',
-                    'username',
                     [
+                        'label' => 'username',
                         'attribute' => 'username',
                         'value' => function (User $model) {
                             return Html::a(Html::encode($model->username), ['view', 'id' => $model->id]);
@@ -41,9 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter' => $searchModel->rolesList(),
                     ],
                     [
-                        'attribute' => 'username',
+                        'label' => 'Status',
+                        'attribute' => 'status',
+                        'filter' => UserHelper::statusList(),
                         'value' => function (User $model) {
-                            return Html::a(Html::encode($model->username), ['view', 'id' => $model->id]);
+                            return UserHelper::statusLabel($model->status);
                         },
                         'format' => 'raw',
                     ],
