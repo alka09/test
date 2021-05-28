@@ -18,6 +18,10 @@ class UserRepository
     {
         return $this->getBy(['email' => $email]);
     }
+    public function get($id): User
+    {
+        return $this->getBy(['id' => $id]);
+    }
     public function getByPasswordResetToken($token): User
     {
         return $this->getBy(['password_reset_token' => $token]);
@@ -30,6 +34,12 @@ class UserRepository
     {
         if (!$user->save()) {
             throw new \RuntimeException('Saving error.');
+        }
+    }
+    public function remove(User $user): void
+    {
+        if (!$user->delete()) {
+            throw new \RuntimeException('Removing error.');
         }
     }
     private function getBy(array $condition): User
