@@ -9,10 +9,6 @@ return [
     'id' => 'app-api',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'api\controllers',
-    'aliases' => [
-        '@staticRoot' => $params['staticPath'],
-        '@static'   => $params['staticHostInfo'],
-    ],
     'bootstrap' => [
         'log',
         'common\bootstrap\SetUp',
@@ -60,6 +56,11 @@ return [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
+
+                'GET cart' => 'cart/index',
+                'DELETE cart' => 'cart/clear',
+                'PUT cart/<id:\w+>/quantity' => 'cart/quantity',
+                'DELETE cart/<id:\w+>' => 'cart/delete',
             ],
         ],
     ],
