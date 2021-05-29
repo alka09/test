@@ -2,6 +2,8 @@
 
 namespace common\bootstrap;
 
+use shop\cart\Cart;
+use shop\cart\storage\HybridStorage;
 use shop\services\ContactService;
 use yii\base\BootstrapInterface;
 use yii\mail\MailerInterface;
@@ -21,6 +23,13 @@ class SetUp implements BootstrapInterface
 
         $container->setSingleton(ManagerInterface::class, function () use ($app) {
             return $app->authManager;
+        });
+
+        $container->setSingleton(Cart::class, function () use ($app) {
+            return new Cart(
+                new HybridStorage($app->get('user'), 'cart', 3600 * 24, $app->db)
+            );
+
         });
     }
 }

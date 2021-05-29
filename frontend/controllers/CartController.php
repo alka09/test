@@ -49,11 +49,6 @@ class CartController extends Controller
         ]);
     }
 
-    /**
-     * @param $id
-     * @return mixed
-     * @throws NotFoundHttpException
-     */
     public function actionAdd($id)
     {
         if (!$product = $this->products->find($id)) {
@@ -61,19 +56,22 @@ class CartController extends Controller
         }
 
         $this->layout = 'blank';
+
         $form = new AddToCartForm($product);
-        $cart = $this->service->getCart();
 
-        if (Yii::$app->request->post() && $form->load(Yii::$app->request->post())) {
-            $this->service->add($product->id, $form->quantity);
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            try {
+                $this->service->add($product->id, $form->quantity);
+                return $this->redirect(['index']);
+            } catch (\DomainException $e) {
+                Yii::$app->errorHandler->logException($e);
+                Yii::$app->session->setFlash('error', $e->getMessage());
+            }
         }
-//
-//        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-//            $this->service->add($product->id, $form->modification, $form->quantity);
-//        }
 
-        return $this->render('index', [
-            'cart' => $cart
+        return $this->render('add', [
+            'product' => $product,
+            'model' => $form,
         ]);
     }
 

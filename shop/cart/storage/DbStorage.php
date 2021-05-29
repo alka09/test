@@ -4,7 +4,6 @@ namespace shop\cart\storage;
 
 use shop\cart\CartItem;
 use shop\entities\Product\Product;
-use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\db\Query;
 
@@ -30,7 +29,7 @@ class DbStorage implements StorageInterface
 
         return array_map(function (array $row) {
             /** @var Product $product */
-            if ($product = Product::find()->andWhere(['id' => $row['product_id']])->one()) {
+            if ($product = Product::find()->Where(['id' => $row['product_id']])->one()) {
                 return new CartItem($product,  $row['quantity']);
             }
             return false;
