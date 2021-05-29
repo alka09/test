@@ -8,7 +8,6 @@ use yii\helpers\ArrayHelper;
 
 class AddToCartForm extends Model
 {
-    public $modification;
     public $quantity;
 
     private $_product;
@@ -27,5 +26,4 @@ class AddToCartForm extends Model
             ['quantity', 'integer', 'max' => $this->_product->quantity],
         ]);
     }
-
 }

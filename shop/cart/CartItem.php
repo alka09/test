@@ -7,6 +7,7 @@ class CartItem
 {
     private $product;
     private $quantity;
+
     public function __construct(Product $product, $quantity)
     {
         $this->product = $product;
@@ -33,7 +34,12 @@ class CartItem
     }
     public function getPrice(): int
     {
-        return $this->product->price_new;
+        return $this->product->price;
+    }
+
+    public function getCost(): int
+    {
+        return $this->getPrice() * $this->quantity;
     }
 
     public function plus($quantity)

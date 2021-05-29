@@ -25,7 +25,7 @@ class CartService
     public function add($productId, $quantity): void
     {
         $product = $this->products->get($productId);
-               $this->cart->add(new CartItem($product, $quantity));
+        $this->cart->add(new CartItem($product, $quantity));
     }
 
     public function set($id, $quantity): void

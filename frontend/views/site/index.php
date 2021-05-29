@@ -1,10 +1,13 @@
 <?php
-/* @var $product shop\entities\Product\Product*/
+/* @var $product shop\entities\Product\Product */
 /* @var $this yii\web\View */
+
+/* @var $cart shop\cart\Cart */
 
 use shop\entities\Product\Product;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\DetailView;
 
 $products = Product::find();
 
@@ -19,20 +22,28 @@ $this->title = 'My Yii Application';
     <div class="body-content">
 
         <div class=container">
-            <div class="cart">
-                <h2>Heading</h2>
+            <div class="products">
+                <?php $products = Product::find()->all() ?>
                 <?php foreach ($products as $product): ?>
-                <div class="name"><?= Html::encode($product->name) ?></div>
-                <div class="price"><?= Html::encode($product->price) ?></div>
-                    <button class="box_products_output_one_cart btn-success btnHide button cartProductsBoxPriceButton"
-                            data-url="<?= Url::to(['/shop/cart/add', 'id' => $product->id]) ?>" data-method="post">
-                        В КОРЗИНУ
-                    </button>
-                <?php endforeach;?>
 
+                    <div class="box">
+                        <div class="box-body">
+                            <?= DetailView::widget([
+                                'model' => $product,
+                                'attributes' => [
+                                    [
+                                        'label' => 'Name',
+                                        'attribute' => 'name',
+                                    ],
+                                    [
+                                        'label' => 'Price',
+                                        'attribute' => 'price',
+                                    ],
+                                ],
+                            ]) ?>
+                        </div>
+                        <button type="button" href="<?= Url::to(['/cart/add', 'id' => $product->id]) ?>" data-method="post"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">Add to Cart</span></button>
+                    </div>
+                <?php endforeach; ?>
             </div>
-
         </div>
-
-    </div>
-</div>
